@@ -70,28 +70,46 @@
 
 
             /* Label data */
-            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                'August', 'September', 'October', 'November', 'December'];
+            var months = {0: 'January', 1: 'February', 2: 'March', 3: 'April', 4: 'May', 5: 'June', 6: 'July',
+                7: 'August', 8: 'September', 9: 'October', 10: 'November', 11: 'December'};
+
             var years = []
-            for(var i = 1980; i < 2011; i++)
+            for(var i = 1998; i < 2002; i++)
                 i % 10 === 0 ? years.push(i) : years.push('');
 
             /* Manipulating data */
-            var dataset =  data.slice(0, 100).map(x => {
+            var dataset =  data.map(x => {
                 let date = new Date(x.date)
-                return {"year" : date.getFullYear(), "month": date.getMonth()}
+                return date.getFullYear() + "-" + months[date.getMonth()]
             });
 
-            const result = dataset.reduce((acc, curr) => (acc[curr.year.toString()  curr.month.toString()] = (acc[curr.year.toString() + curr.month.toString()] || 0) + 1, acc), {});
-            console.log(dataset)
-            console.log(result)
-            var resultArray = []
+            const result = dataset.reduce((acc, curr) => (acc[curr] = (acc[curr] || 0) + 1, acc), {});
+            //console.log(dataset)
+            //console.log(result)
 
-            for (const property in result) {
+            var highLevel = Object.values(months).map(x => {
+                return {"key": x, "value": []}
+            })
 
-                var resultObject = {"id" : property, "count" :result[property] }
-                resultArray.push(resultObject)
-            }
+            var highLevelMapped = highLevel.map(x => {
+
+                let month = x.key
+                let pertinentValues = Object.keys(result).filter(x => x.includes(month))
+                //console.log(month)
+                //console.log(pertinentValues)
+
+                let values = pertinentValues.map(x =>{
+                    return {key: x.split("-")[0] , value : result[x] }
+                })
+
+
+                return {key: x .key, values: values}
+                //console.log(values)
+            })
+
+
+
+            console.log(highLevelMapped)
 
 
 
